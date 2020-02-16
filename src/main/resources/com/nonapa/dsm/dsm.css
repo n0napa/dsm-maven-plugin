@@ -1,0 +1,35 @@
+body { font-family: sans-serif }
+.dsm td[title] { background-color: silver; color: black }
+.dsm td.cycle { background-color: #800000; color: white }
+.dsm td > a { color: inherit; text-decoration: none; display: block; width: 100%; }
+.dsm td.same { background-color: #0080C0; color: white }
+
+.dsm th {
+  text-align: left;
+  position: sticky;
+  left: 0;
+  background-color: white;
+  color: black;
+}
+
+.cycles td {
+  font-family: monospace;
+}
+
+th {
+  text-align: left;
+}
+
+.cycles {
+	margin: 1em 0;
+}
+.cycles:not(:target) {
+	display: none;
+}
+
+table { border-collapse: separate; border-spacing: 0 }
+.dsm td { width: 2em; min-width: 2em; max-width: 2em; text-align: center }
+td, th { padding: 2px }
+table, tr, tbody, td, th { border: none }
+table[border] td, table[border] th { border-right: 1px solid #E0E0E0; border-bottom: 1px solid #E0E0E0 }
+table[border] { border-top: 1px solid #E0E0E0; border-left: 1px solid #E0E0E0 }
