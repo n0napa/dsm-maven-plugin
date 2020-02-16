@@ -98,21 +98,12 @@ public class DSMBuilder {
     private int initialSort() {
 
         Collections.sort(packages, (p1, p2) -> {
-            /*
-             * First check a package dependency index => how many other packages it
-             * depends on. Obviously if we have packages A, B and C and :
-             * A depends on B and C
-             * B depends on C
-             * C depends to none
-             * then regardless of the count of actual class dependencies (how
-             * many classes form A depend on how many of B and C, etc..) we can 
-             * sort the list so that we have no cycles!
-             */
-            int diff = p1.siblingDependenciesCount() - p2.siblingDependenciesCount();
+           
+            // check overall package dependency count -> how many
+            // classes from other packages this package depends on.
+            int diff = p1.dependencyCount() - p2.dependencyCount();
             if (diff == 0) {
-                // check overall package dependency count -> how many
-                // classes from other packages this package depends on.
-                diff = p1.dependencyCount() - p2.dependencyCount();
+                diff = p1.dependenciesTo(p2) - p2.dependenciesTo(p1);
                 if (diff == 0) {
                     // last resort
                     return p1.getName().compareTo(p2.getName());
