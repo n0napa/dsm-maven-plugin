@@ -50,7 +50,7 @@ public class DsmMojo extends AbstractMojo {
         String artifactName;
         String artifactPath;
         if (source != null && source.exists()) {
-            artifactName = source.getName(); 
+            artifactName = source.getName();
             artifactPath = source.getPath();
         } else {
             artifactName = project.getBuild().getFinalName() + ".jar";
@@ -59,9 +59,11 @@ public class DsmMojo extends AbstractMojo {
 
         try {
 
+            getLog().info("Running jdeps analysis on " + artifactPath);
             JdepsRunner.run(artifactPath, dsmPath.toString());
 
             Path dotPath = Paths.get(dsmPath.toString(), artifactName + ".dot");
+            getLog().debug("Generated jdeps .dot at " + dotPath);
 
             DotToLibraryParser parser = new DotToLibraryParser(artifactName);
             Library lib = parser.parse(dotPath);
@@ -70,9 +72,18 @@ public class DsmMojo extends AbstractMojo {
                                             .collectVariations(Boolean.parseBoolean(variations))
                                             .build();
 
+            getLog().debug("DSMs built for " + artifactPath);
+
+            if (!dsms.isEmpty() && getLog().isDebugEnabled()) {
+                DSM first = dsms.iterator().next();
+                getLog().debug("Cycling dependecies: " + first.cycles());
+                getLog().debug("Matrix:" + System.lineSeparator() + first);
+            }
+
             Path htmlPath = Paths.get(dsmPath.toString(), artifactName + ".html");
+            getLog().info("Building DSM html report for " + artifactPath);
+
             new Report().print(new ArrayList<>(dsms), htmlPath.toFile());
-            
             URL url = Report.class.getResource("dsm.css");
             if (url != null) {
                 try (InputStream in = url.openStream()) {
@@ -82,9 +93,10 @@ public class DsmMojo extends AbstractMojo {
                 throw new FileNotFoundException("Resource dsm.css not found");
             }
 
+            getLog().info("DSM html report successfully generated at " + htmlPath);
+
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            getLog().error("Failed to generate DSM report", e);
         }
     }
 
