@@ -59,10 +59,20 @@ public class DsmMojo extends AbstractMojo {
 
         try {
 
+            if (!Paths.get(artifactPath).toFile().exists()) {
+                getLog().info("Artifact does not exist : " + artifactPath);
+                return;
+            }
+
             getLog().info("Running jdeps analysis on " + artifactPath);
             JdepsRunner.run(artifactPath, dsmPath.toString());
 
             Path dotPath = Paths.get(dsmPath.toString(), artifactName + ".dot");
+            if (!dotPath.toFile().exists()) {
+                getLog().info("JDeps output (.dot) not generated : " + dotPath);
+                return;
+            }
+
             getLog().debug("Generated jdeps .dot at " + dotPath);
 
             Library lib = new DotToLibraryParser(artifactName).parse(dotPath);
@@ -92,10 +102,9 @@ public class DsmMojo extends AbstractMojo {
                 throw new FileNotFoundException("Resource dsm.css not found");
             }
 
-            getLog().info("DSM html report successfully generated at " + htmlPath);
+            getLog().info("DSM html report successfully generated : " + htmlPath);
 
             getLog().debug("Cleaning jdeps resources.");
-
             if (Files.deleteIfExists(dotPath))
                 getLog().debug("Resource deleted : " + dotPath);
 
