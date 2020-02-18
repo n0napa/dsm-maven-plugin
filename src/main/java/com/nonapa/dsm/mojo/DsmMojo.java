@@ -40,7 +40,7 @@ public class DsmMojo extends AbstractMojo {
 
     @Parameter(property = "variations", defaultValue = "false")
     private String variations;
-    
+
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
@@ -65,8 +65,7 @@ public class DsmMojo extends AbstractMojo {
             Path dotPath = Paths.get(dsmPath.toString(), artifactName + ".dot");
             getLog().debug("Generated jdeps .dot at " + dotPath);
 
-            DotToLibraryParser parser = new DotToLibraryParser(artifactName);
-            Library lib = parser.parse(dotPath);
+            Library lib = new DotToLibraryParser(artifactName).parse(dotPath);
             Collection<DSM> dsms = new DSMBuilder().forLibrary(lib)
                                             .aggressive(Boolean.parseBoolean(aggressive))
                                             .collectVariations(Boolean.parseBoolean(variations))
@@ -94,6 +93,15 @@ public class DsmMojo extends AbstractMojo {
             }
 
             getLog().info("DSM html report successfully generated at " + htmlPath);
+
+            getLog().debug("Cleaning jdeps resources.");
+
+            if (Files.deleteIfExists(dotPath))
+                getLog().debug("Resource deleted : " + dotPath);
+
+            Path jdepsSummary = Paths.get(dotPath.getParent().toString(), "summary.dot");
+            if (Files.deleteIfExists(jdepsSummary))
+                getLog().debug("Resource deleted : " + jdepsSummary);
 
         } catch (IOException e) {
             getLog().error("Failed to generate DSM report", e);
