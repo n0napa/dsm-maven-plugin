@@ -2,6 +2,14 @@
 A Maven Plugin that generates a DSM (Dependency Structure Matrix) HTML report.
 It visualizes dependency cycles among Java project packages which might be a sign that the project design is too complicated.
 ## Setup
+
+### Prerequisites
+
+* JDK 1.8 - tools.jar is used by the plugin
+* Maven (ofcourse)
+
+### Installation
+
 To use this plugin, install it locally with Maven:
 
 ```
