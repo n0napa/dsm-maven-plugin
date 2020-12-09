@@ -21,7 +21,7 @@ public class DotScannerTest extends TestCase {
     @Test
     public void testScanWithNullDependencyHandler() {
         try {
-            fixure.scan(Paths.get("src/test/resources/jdeps/engine.jar.dot"), null);
+            fixure.scan(Paths.get("src/test/resources/jdeps/fake.jar.dot"), null);
         } catch (Exception e) {
             fail(e.getMessage());
         }
